@@ -151,10 +151,19 @@
 
   .used {
     color: #00B050;
+    transition:all .3s ease-in-out;
   }
   .used:hover {
     color: #00c700;
     /*font-weight: bolder;*/
+    font-size: 22px;
+  }
+
+  h1 {
+    transition:all .3s ease-in-out;
+  }
+
+  h1:hover {
     font-size: 20px;
   }
 

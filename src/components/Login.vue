@@ -1,87 +1,99 @@
 <template>
-  <div class="login">
-    <el-row :gutter="5">
-      <el-col :span="2" :offset="19">
-        <el-button type="text" @click="preCreateUser" >Sign up</el-button>
-      </el-col>
-      
-      <el-col :span="2">
-        <el-button type="text">About me</el-button>
-      </el-col>
-    </el-row>
+  <div class="login" >
+    <section>
+
+      <video autoplay loop style="width:100%" >
+
+        <source src="http://7xkwa7.media1.z0.glb.clouddn.com/sample_video_H" type="video/mp4">
+
+        </video>
+
+        <el-row :gutter="5">
+          <el-col :span="2" :offset="19">
+            <el-button type="text" style="color:#fefefe" @click="preCreateUser" >Sign up</el-button>
+          </el-col>
+
+          <el-col :span="2">
+            <el-button type="text" style="color:#fefefe" >About me</el-button>
+          </el-col>
+        </el-row>
 
 
-    <h1>{{ logo_title }}</h1>
+        <h1>{{ logo_title }}</h1>
 
-    
-    <el-row :gutter="5">
-
-      <el-col :span="6" :offset="8" class="el_user_pass"  >
-        <el-form :model="login_form" :rules="login_rules" ref="login_form" label-width="100px" class="demo-ruleForm">
-
-          <el-form-item label="" prop="username">
-            <el-input type="text" :icon="username_input" placeholder="Username" v-model="login_form.username"  auto-complete="ons"></el-input>
-          </el-form-item>
-
-          <el-form-item label="" prop="password">
-            <el-input type="password" :icon="password_input"  placeholder="Password" v-model="login_form.password" auto-complete="off"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary"   @click="submitForm('login_form')">Login</el-button>
-          </el-form-item>
-        </el-form>
-
-      </el-col>
-      <el-col :span="6" :offset="9" class="el_col_bottom">
-
-        <p>
-          Copyright &copy; 2017 Junkai Huang. All rights reserved.
-        </p>
-      </el-col>
-    </el-row>
+        <el-row type="flex" justify="space-around">
+          <el-col :span="3"  >
+          <el-form :model="login_form" :rules="login_rules" ref="login_form" label-width="0px">
+              <el-form-item label="" prop="username">
+                <el-input type="text" size="small" :icon="username_input" placeholder="Username" v-model="login_form.username"  auto-complete="ons"></el-input>
+              </el-form-item>
+              <el-form-item label="" prop="password">
+                <el-input type="password" size="small" :icon="password_input"  placeholder="Password" v-model="login_form.password" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary"   @click="submitForm('login_form')">Login</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
 
 
+        <el-row type="flex" justify="space-around">
+          <el-col :span="6" class="el_col_bottom">
+            <p>
+              Copyright &copy; 2017 Junkai Huang. All rights reserved.
+            </p>
+          </el-col>
+
+        </el-row>
 
 
-    <el-dialog title="" top="15%" v-model="dialogSignUpFormVisible" size="small">
-      <el-row>
-        <el-col :span="8">
-          <h2>
-            Sign Up
-          </h2>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-
-        <el-col :span="14" :offset="2" >
-          <el-form :model="sign_form" :rules="signup_rules" ref="sign_form"  label-width="100px" class="demo-ruleForm">
-            <el-form-item label="Username" prop="newUsername" >
-              <el-input v-model="sign_form.newUsername" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="Password" prop="newPassword">
-              <el-input  type="password" v-model="sign_form.newPassword" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="Confirm" prop="checkPassword" >
-              <el-input type="password" v-model="sign_form.checkPassword" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="Email" prop="newEmail">
-              <el-input v-model="sign_form.newEmail" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-       <el-button @click="dialogSignUpFormVisible = false">Cancel</el-button>
-       <el-button type="primary" @click="createUser" :loading="isCreate" >Create</el-button>
-     </div>
-   </el-dialog>
+      </section>
 
 
- </div>
-</template>
 
-<script>
+      <section>
+        <el-dialog title="" top="15%" v-model="dialogSignUpFormVisible" size="small">
+          <el-row>
+            <el-col :span="8">
+              <h2>
+                Sign Up
+              </h2>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+
+            <el-col :span="14" :offset="2" >
+              <el-form :model="sign_form" :rules="signup_rules" ref="sign_form"  label-width="100px" class="demo-ruleForm">
+                <el-form-item label="Username" prop="newUsername" >
+                  <el-input v-model="sign_form.newUsername" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="Password" prop="newPassword">
+                  <el-input  type="password" v-model="sign_form.newPassword" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="Confirm" prop="checkPassword" >
+                  <el-input type="password" v-model="sign_form.checkPassword" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="Email" prop="newEmail">
+                  <el-input v-model="sign_form.newEmail" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
+          <div slot="footer" class="dialog-footer">
+           <el-button @click="dialogSignUpFormVisible = false">Cancel</el-button>
+           <el-button type="primary" @click="createUser" :loading="isCreate" >Create</el-button>
+         </div>
+       </el-dialog>
+
+     </section>
+
+
+
+   </div>
+ </template>
+
+ <script>
   export default {
     name: 'login',
     data () {
@@ -217,11 +229,11 @@
 <style scoped>
 
   h1 {
-    margin-top: 220px;
+    margin-top: 180px;
     font-family: "Vladimir Script";
     font-weight: normal;
-    font-size: 100px;
-    color: #00B050;
+    font-size: 120px;
+    color: #eeeeee;
   }
 
   h2 {
@@ -249,10 +261,20 @@
     margin-top: 10px;
   }
   .el_col_bottom {
-    margin-top: 30px;
+    margin-top: 20px;
     color: #bfbfbf;
   }
 
-
+  video {
+    position: fixed;
+    right:0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    height: auto;
+    width: auto;
+    z-index: -99999;
+    -webkit-filter:brightness(.5);
+  }
 
 </style>
