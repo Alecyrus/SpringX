@@ -7,10 +7,12 @@ import '../theme/index.css'
 import store from './vuex/store'
 import ElementUI from 'element-ui'
 import Icon from 'vue-svg-icon/Icon.vue';
+import axios from 'axios';
 
 
 Vue.use(ElementUI);
 Vue.component('icon', Icon);
+Vue.prototype.$request = axios
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

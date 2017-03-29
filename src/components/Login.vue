@@ -2,7 +2,7 @@
   <div class="login" >
     <section>
 
-      <video autoplay loop style="width:100%" >
+      <video autoplay loop   style="width:100%" >
 
         <source src="http://7xkwa7.media1.z0.glb.clouddn.com/sample_video_H" type="video/mp4">
 
@@ -23,7 +23,7 @@
 
         <el-row type="flex" justify="space-around">
           <el-col :span="3"  >
-          <el-form :model="login_form" :rules="login_rules" ref="login_form" label-width="0px">
+            <el-form :model="login_form" :rules="login_rules" ref="login_form" label-width="0px">
               <el-form-item label="" prop="username">
                 <el-input type="text" size="small" :icon="username_input" placeholder="Username" v-model="login_form.username"  auto-complete="ons"></el-input>
               </el-form-item>
@@ -211,12 +211,27 @@
       async createUser() {
         // this.$refs[formName].resetFields();
         this.isCreate = true;
-        await this.sleep(1000);
+        console.log(this.sign_form.newUsername);
+        console.log(this.sign_form.newPassword);
+        console.log(this.sign_form.newEmail);
+        this.$request.post('/api/v1/account/user', {
+          username: this.sign_form.newUsername,
+          password: this.sign_form.newPassword,
+          email:this.sign_form.newEmail
+        }).then(function (response) {
+          console.log(response.data);
+          console.log(this.isCreate);
+        }).catch(function (error) {
+          console.log(error);
+          return error;
+        });
+
         this.$notify({
           title: 'Success',
           message: 'The user is created successsfully',
           type: 'success'
-        });
+          });  
+        
         this.isCreate = false;
         this.dialogSignUpFormVisible = false;
       }
@@ -272,9 +287,10 @@
     min-width: 100%;
     min-height: 100%;
     height: auto;
+    overflow:hidden;
     width: auto;
     z-index: -99999;
-    -webkit-filter:brightness(.5);
+    -webkit-filter:brightness(.6);
   }
 
 </style>
