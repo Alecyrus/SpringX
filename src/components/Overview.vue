@@ -31,7 +31,7 @@
     data () {
       return {
         msg: 'Welcome to overview',
-        userUsage: [{"type":"Hosts","used":4,"total":5},{"type":"CPU","used":6,"total":10},{"type":"Memory","used":2048,"total":8192}]
+        userUsage: this.$store.getters.getUserUsage
       }
     },
     components: {

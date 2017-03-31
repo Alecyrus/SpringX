@@ -65,9 +65,11 @@
           });
         }
         else if (tab.name === "second") {
+          this.$store.dispatch('FETCH_USER_VM');
           this.$router.push('/user/'+this.$route.params['username']+"/virtual_machines");
         }
         else if (tab.name === "first") {
+          this.$store.dispatch('FETCH_USER_USAGE');
           this.$router.push('/user/'+this.$route.params['username']+"/overview");
         }
 

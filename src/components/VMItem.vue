@@ -3,15 +3,15 @@
   <el-col :span="3" v-for="(vm, index) in vmInfo" :key="vm.id" :offset="index > 0 ? 1 : 4" >
     <el-card :body-style="{ padding: '5px' }">
       <!-- <img src="../assets/logo.png" class="image" height="100px"> -->
-      <icon :name="vm.vmOSType" scale="10" class='vmtitle'></icon>
+      <icon :name="vm.vmOsType" scale="10" class='vmtitle'></icon>
       <div style="padding-top:10px;">
         
         <span>{{vm.vmName}}</span>
         <div class="bottom">
           <p >{{vm.vmStatus}}</p>
-          <el-button type="text" @click="vmOperate(vm.id, 'start')"><icon name="start" scale="2" class="start"></icon></el-button>
-          <el-button type="text" @click="vmOperate(vm.id, 'shutdown')"><icon name="shutdown" scale="2" class="shutdown"></icon></el-button>
-          <el-button type="text" @click="vmOperate(vm.id, 'delete')"><icon name="delete" scale="2" class="delete"></icon></el-button>   
+          <el-button type="text" @click="vmOperate(vm.user_id, 'start')"><icon name="start" scale="2" class="start"></icon></el-button>
+          <el-button type="text" @click="vmOperate(vm.user_id, 'shutdown')"><icon name="shutdown" scale="2" class="shutdown"></icon></el-button>
+          <el-button type="text" @click="vmOperate(vm.user_id, 'delete')"><icon name="delete" scale="2" class="delete"></icon></el-button>   
         </div>
       </div>
     </el-card>

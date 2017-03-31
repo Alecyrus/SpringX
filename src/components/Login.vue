@@ -2,7 +2,7 @@
   <div class="login" >
     <section>
 
-      <video autoplay loop   style="width:100%" >
+      <video autoplay loop muted  style="width:100%" >
 
         <source src="http://7xkwa7.media1.z0.glb.clouddn.com/sample_video_H" type="video/mp4">
 
@@ -123,7 +123,7 @@
       var validateNewPassword = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('Please confirm the password'));
-        } else if (value !== this.sign_form.newUsername) {
+        } else if (value != this.sign_form.newPassword) {
           callback(new Error('Error!'));
         } else {
           callback();
@@ -154,13 +154,12 @@
           { min: 6, message: 'at least 6 characters', trigger: 'blur' }
           ],
           newPassword: [
-          { required: true,  message: 'Please input password', trigger: 'blur'},
-          { min: 8, message: 'at least 8 characters', trigger: 'blur' }
+          { required: true,  message: 'Please input password', trigger: 'blur'}
+          
           ],
           checkPassword: [
           { validator: validateNewPassword, trigger: 'blur'},
-          { required: true,  message: 'Please input password', trigger: 'blur'},
-          { min: 8, message: 'at least 8 characters', trigger: 'blur' }
+          { required: true,  message: 'Please input password', trigger: 'blur'}
           ],
           newEmail: [
           { required: true, trigger: 'blur'}
@@ -178,20 +177,65 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // alert('submit!');
+            
             console.log(this.login_form.username);
             this.$store.dispatch({
-              type: 'setUserInfo',
+              type: 'SET_USER_INFO',
               username: this.login_form.username,
               password: this.login_form.password
             })
-            //这里进行登录验证
+            console.log(this.login_form.username);
             console.log(this.$store.getters.getUsername);
-            //登录成功进行跳转
-            this.$router.push('/user/'+this.$store.getters.getUsername+"/overview");
+            console.log("------------");
+            //这里进行登录验证
 
+            this.$request.put('/api/v1/account/user', {
+              username: this.login_form.username,
+              password: this.login_form.password
+            }).then((response) => {
+              //console.log(response.data.replace(/'([^']*)'/g,'"$1"'));
+              let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+              //console.log(resp.info.id);
+              //console.log(typeof(resp.info.id));
+              if (resp.state){
+                this.$store.dispatch({
+                    type: 'SET_USER_ID',
+                    user_id: resp.info.id
+                });
+                this.$store.dispatch({
+                    type: 'SET_USER_USAGE', 
+                    instance_left: resp.info['instance_left'],
+                    cpu_left: resp.info['cpu_left'],
+                    memory_left: resp.info['memory_left']
+                });
+                this.$store.dispatch('FETCH_USER_VM');
+                console.log(this.$store.getters.getUserVM);
+                //console.log(this.$store.getters.getUserUsage);
+                this.$router.push('/user/'+this.$store.getters.getUsername+"/overview");
+              }
+              else {
+                this.$notify.error({
+                  title: 'Failed',
+                  message: resp.info
+                });
+              }
+            }).catch((error) => {
+              console.log(error);
+              this.$notify.error({
+                  title: 'Failed',
+                  message: "Network Error"
+                });
+              this.$router.push('/');
+              });
+
+            
+            //登录成功进行跳转
           } else {
-            console.log('error submit!!');
-            return false;
+            this.$notify.error({
+                  title: 'Failed',
+                  message: "Network Error"
+                });
+            this.$router.push('/');
           }
         });
       },
@@ -201,9 +245,11 @@
       preCreateUser() {
         this.isCreate = false;
         this.dialogSignUpFormVisible = true;
-        this.$refs['sign_form'].resetFields();
-
-
+        try{
+          this.$refs['sign_form'].resetFields();
+        }
+        catch(error){
+        }
       },
       sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -211,29 +257,43 @@
       async createUser() {
         // this.$refs[formName].resetFields();
         this.isCreate = true;
-        console.log(this.sign_form.newUsername);
-        console.log(this.sign_form.newPassword);
-        console.log(this.sign_form.newEmail);
+        //console.log(this.sign_form.newUsername);
+        //console.log(this.sign_form.newPassword);
+        //console.log(this.sign_form.newEmail);
         this.$request.post('/api/v1/account/user', {
           username: this.sign_form.newUsername,
           password: this.sign_form.newPassword,
           email:this.sign_form.newEmail
-        }).then(function (response) {
-          console.log(response.data);
-          console.log(this.isCreate);
-        }).catch(function (error) {
+        }).then((response) => {
+          //console.log(response.data.replace(/'([^']*)'/g,'"$1"'));
+          let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+          //console.log(resp.state);
+          //console.log(typeof(resp.info));
+          if (resp.state){
+            this.$notify({
+              title: 'Success',
+              message: resp.info,
+              type: 'success'
+            });
+          }
+          else {
+            this.$notify.error({
+              title: 'Failed',
+              message: resp.info,
+            });
+
+          }
+          this.isCreate = false;
+          this.dialogSignUpFormVisible = false;
+          
+        }).catch((error) => {
           console.log(error);
           return error;
         });
 
-        this.$notify({
-          title: 'Success',
-          message: 'The user is created successsfully',
-          type: 'success'
-          });  
         
-        this.isCreate = false;
-        this.dialogSignUpFormVisible = false;
+        
+        
       }
     }
   }

@@ -180,7 +180,7 @@
             dialogCreateVMFormVisible: false,
             fullscreenLoading: false,
             currentDate: new Date(),
-            vmItems: [[{'id':4,'vmName': 'CentOs 7','vmStatus': "Active", "vmOSType":"centos" }, {'id':21,'vmName': 'Windows 10','vmStatus': "Active", "vmOSType":"windows" },{'id':435,'vmName': 'ubuntu','vmStatus': "Active", "vmOSType":"ubuntu" },{'id':12,'vmName': 'CentOs 6','vmStatus': "Suspend", "vmOSType":"centos" }]]
+            vmItems: this.$store.getters.getUserVM
           }
         },
         methods: {
