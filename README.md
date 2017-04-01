@@ -2,7 +2,7 @@
 ![image](https://travis-ci.org/Alecyrus/SpringX.svg?branch=master)
 
 
-> A web front-ends for simple private cloud built with VueJS.
+> A web front-ends for the simple private cloud.
 
 
 
