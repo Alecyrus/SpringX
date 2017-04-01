@@ -3,8 +3,15 @@
 > A web front-ends for simple private cloud built with VueJS.
 
 
+
+## Login
 ![Login](http://7xq893.com1.z0.glb.clouddn.com/TIM%E5%9B%BE%E7%89%8720170401152434.png)
 
+## Overview
+![Overview](http://7xq893.com1.z0.glb.clouddn.com/overview.png)
+
+## Virtual Machine
+![VM](http://7xq893.com1.z0.glb.clouddn.com/vm_list.png)
 
 
 ## Build Setup
