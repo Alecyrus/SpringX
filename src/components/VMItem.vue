@@ -1,33 +1,144 @@
 <template>
+<div class="vm_list" >
   <el-row type="flex">
-  <el-col :span="3" v-for="(vm, index) in vmInfo" :key="vm.id" :offset="index > 0 ? 1 : 4" >
-    <el-card :body-style="{ padding: '5px' }">
-      <!-- <img src="../assets/logo.png" class="image" height="100px"> -->
-      <icon :name="vm.vmOsType" scale="10" class='vmtitle'></icon>
-      <div style="padding-top:10px;">
-        
-        <span>{{vm.vmName}}</span>
-        <div class="bottom">
-          <p >{{vm.vmStatus}}</p>
-          <el-button type="text" @click="vmOperate(vm.user_id, 'start')"><icon name="start" scale="2" class="start"></icon></el-button>
-          <el-button type="text" @click="vmOperate(vm.user_id, 'shutdown')"><icon name="shutdown" scale="2" class="shutdown"></icon></el-button>
-          <el-button type="text" @click="vmOperate(vm.user_id, 'delete')"><icon name="delete" scale="2" class="delete"></icon></el-button>   
-        </div>
-      </div>
-    </el-card>
-  </el-col>
-</el-row>
+  
+    <transition-group name="list-complete" tag="p">
+    <el-col  class="list-complete-item"  v-for="(vm, index) in vmInfo" :key="vm" >
+        <el-card  :body-style="{ margin: '0px' }" >
+          <!-- <img src="../assets/logo.png" class="image" height="100px"> -->
+          <icon :name="vm.vmOsType" scale="10" class='vmtitle' ></icon>
 
+          <div style="padding-top:10px;">
+
+            <span>{{vm.vmName}}</span>
+            <div><el-button type="text" @click="enterVM(vm)">{{vm.vmStatus}}</el-button></div>
+
+            <div class="bottom">
+
+              <el-button type="text" @click="vmStart(vm)"><icon name="start" scale="2" class="start"></icon></el-button>
+              <el-button type="text" @click="vmShutdown(vm)"><icon name="shutdown" scale="2" class="shutdown"></icon></el-button>
+              <el-button type="text" @click="vmDelete(vm)"><icon name="delete" scale="2" class="delete"></icon></el-button>   
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+
+    </transition-group>
+
+    
+  </el-row>
+</div>
 </template>
 
 <script>
   export default {
     name: 'vmitem',
     props: ['vmInfo'],
+    data () {
+      return {
+        isLoading:[0,0,0,0]
+      };
+    },
     methods: {
-      vmOperate() {
-        //这里进行虚拟机的控制
-        console.log(arguments);
+      vmStart(vm) {
+        console.log(vm);
+        this.$request.post('/api/v1/environment/action', {
+          user_id: vm.user_id,
+          template_id: vm.template_id
+        }).then((response) => {
+          let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+          console.log(resp);
+          this.$message({
+            showClose: true,
+            message: resp.info
+          });
+        }).catch((error) => {
+          console.log(error);
+          this.$message({
+            showClose: true,
+            type: 'error',
+            message: "Network Error",
+          });
+        });
+        this.$store.dispatch('FETCH_USER_VM');
+
+
+      },
+      vmShutdown(vm) {
+        console.log(vm);
+        this.$request.put('/api/v1/environment/action', {
+          user_id: vm.user_id,
+          template_id: vm.template_id
+        }).then((response) => {
+          let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+          console.log(resp);
+          this.$message({
+            showClose: true,
+            message: resp.info
+          });
+        }).catch((error) => {
+          console.log(error);
+          this.$message({
+            showClose: true,
+            type: 'error',
+            message: "Network Error",
+          });
+
+        });
+        this.$store.dispatch('FETCH_USER_VM');
+
+      },
+      vmDelete(vm) {
+        this.$request.delete('/api/v2/environment/target/'+vm.user_id+'&'+vm.template_id)
+        .then((response) => {
+          let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+          console.log(resp);
+          this.$message({
+            showClose: true,
+            message: resp.info
+          });
+        }).catch((error) => {
+          console.log(error);
+          this.$message({
+            showClose: true,
+            type: 'error',
+            message: "Network Error",
+          });
+        });
+        this.$store.dispatch('FETCH_USER_VM');
+      },
+      enterVM(vm) {
+        console.log(vm);
+        if (vm.vmStatus === 'Power Off') {
+          this.$message({
+            showClose: true,
+            type: 'error',
+            message: "Not Running",
+          });
+        }
+        else {
+          this.$request.patch('/api/v1/environment/action', {
+            user_id: vm.user_id,
+            template_id: vm.template_id
+          }).then((response) => {
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: "Enter the " + vm.vmName + " remote desktop successfully",
+            });
+            let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+            console.log(resp.info.uri);
+            window.open(resp.info.uri, "vmName", "width=581,height=335,toolbar=no,menubar=yes,scrollbars=no,resizable=no,resizable=no,status=no");
+          }).catch((error) => {
+            console.log(error);
+            this.$message({
+              showClose: true,
+              type: 'error',
+              message: "Network Error",
+            });
+          });
+        }
+        
       }
     }
   }
@@ -43,6 +154,10 @@
     font-size: 15px;
 
   }
+  span {
+    font-size: 20px;
+    font-color: #7F7F7F;
+  } 
 
   .el-row {
     margin-bottom: 30px;
@@ -90,5 +205,27 @@
     margin-top: -1px;
     box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, .10), 0px 0px 12px 0px rgba(0, 0, 0, .04)
   }
+  .vmStatus {
+    transition:all .3s ease-in-out;
+  }
 
+
+  .list-complete-item {
+    transition: all 1s;
+    width: 190px;
+    margin-left: 100px;
+  }
+  .list-complete-enter, .list-complete-leave-active {
+    opacity: 0;
+    transform: translateY(30px);
+    transition:all .3s ease-in-out;
+  }
+  .list-complete-leave-active {
+    position: absolute;
+  }
+
+
+  .vm_list {
+    margin-left:80px;
+  }
 </style>

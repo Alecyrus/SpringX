@@ -27,10 +27,10 @@
  </el-card>
 </el-col>
 </el-row>
- -->
-<div class="uservmlist"  v-for="vmitem in vmItems" :key="vmitem.id">
-  <vmitem :vm-info="vmitem" >
-</vmitem>
+-->
+<div class="uservmlist"  v-for="vmitem in vmitems" :key="vmitem.id">
+  <vmitem class="vmitem" :vm-info="vmitem" >
+  </vmitem>
 
 </div>
 
@@ -70,6 +70,7 @@
         </el-form-item>
         <el-form-item label="Image" prop="newVMImage" >
           <el-cascader 
+          v-model="create_vm_form.newVMImage"
           :options="options"
           :show-all-levels="false"
           placeholder="Pleace choose an image"
@@ -98,20 +99,18 @@
         create_vm_form: {
           newVmName: '',
           newCPU: '',
-          newMemory: ''
+          newMemory: '',
+          newVMImage:[]
         },
         create_vm_rules: {
           newVmName: [
-          { required: true, trigger: 'blur'},
-          { min: 6, message: 'at least 6 characters', trigger: 'blur' }
+          { required: true, trigger: 'blur'}
           ],
           newMemory: [
-          { required: true, trigger: 'blur'},
-          { min: 512, max: 8192, message: 'at least 6 characters', trigger: 'blur' }
+          { required: true, trigger: 'blur'}
           ],
           newCPU: [
-          { required: true, trigger: 'blur'},
-          { min: 1, max: 4, message: 'at least 6 characters', trigger: 'blur' }
+          { required: true, trigger: 'blur'}
           ]
         },
         options :[{
@@ -121,93 +120,143 @@
             value: 'ubuntu',
             label: 'Ubuntu',
             children: [{
-              value: 'ubuntu14.04_desktop',
+              value: '1',
               label: 'Ubuntu 14.04 Desktop'
             },
             {
-              value: 'ubuntu14.04_server',
+              value: '1',
               label: 'Ubuntu 14.04 Server'
-            },
-            {
-              value: 'ubuntu16.04_desktop',
-              label: 'Ubuntu 16.04 Desktop'
-            },
-            {
-              value: 'ubuntu16.04_server',
-              label: 'Ubuntu 16.04 Server'
             }
             ]},
             {
               value: 'centos',
               label: 'Centos',
               children: [{
-                value: 'centos6.5',
+                value: '2',
                 label: 'Centos6.5 x86_64'
               },
               {
-                value: 'centos7.0',
+                value: '2',
                 label: 'Centos7.0 x86_64'
-              },
-              {
-                value: 'centos7.1',
-                label: 'Centos7.1 x86_64'
-              },
-              {
-                value: 'centos7.3',
-                label: 'Centos7.3 x86_64'
               }
               ]},
               ]
-            },
-            {
-              value: 'windows',
-              label: 'Windows',
-              children: [{
-                value: 'winsows_xp',
-                label: 'Windows Xp'
-              },
-              {
-                value: 'winsows7',
-                label: 'Windows 7'
-              },
-              {
-                value: 'winsows10',
-                label: 'Windows 10'
-              }]
-            },
+            }
             ],
             msg: 'Welcome to virtual_machines',
             dialogCreateVMFormVisible: false,
             fullscreenLoading: false,
-            currentDate: new Date(),
-            vmItems: this.$store.getters.getUserVM
+            currentDate: new Date()
+            //vmItems: this.$store.getters.getUserVM
+          }
+        },
+        computed: {
+          vmitems () {
+            return this.$store.getters.getUserVM
           }
         },
         methods: {
           preCreateNewVM() {
             this.isCreate = false;
             this.dialogCreateVMFormVisible = true;
-            console.log(this.$refs['create_vm_form']);
-            this.$refs['create_vm_form'].resetFields();
+            try{
+              this.$refs['create_vm_form'].resetFields();
+            }
+            catch(error){
+            }
           },
           sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
           },
           async createVM() {
+            this.$store.dispatch('FETCH_USER_USAGE');
 
             this.dialogCreateVMFormVisible = false;
             this.fullscreenLoading = true;
-            // setTimeout(() => {
-            //   this.fullscreenLoading = false;
-            // }, 3000);
-            await this.sleep(1000);
-            this.fullscreenLoading = false;
-            this.$notify({
-              title: 'Success',
-              message: 'The virtual machine is created successsfully',
-              type: 'success'
+            this.$request.patch('/api/v1/environment/template', {
+              image_id: parseInt(this.create_vm_form.newVMImage[2]),
+              cpu: parseInt(this.create_vm_form.newCPU),
+              memory: parseInt(this.create_vm_form.newMemory),
+              name: this.create_vm_form.newVmName,
+              user_id: this.$store.getters.getUserID
+            }).then((response) => {
+              let resp1 = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+              if (resp1.state) {
+                this.$request.post('/api/v1/template/flavor/'+resp1.info.template_id)
+                .then((response) => {
+                  let resp2 = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+                  if (! resp2.state) {
+                    this.fullscreenLoading = false;
+                    this.$message({
+                      showClose: true,
+                      type: 'error',
+                      message: resp2.info,
+                    });
+                  } else { 
+                        this.$request.post('/api/v1/environment/target', {
+                          user_id: this.$store.getters.getUserID,
+                          template_id: resp1.info.template_id,
+                          vmName: this.create_vm_form.newVmName
+                        }).then((response) => {
+                          let resp = JSON.parse(response.data.replace(/'([^']*)'/g,'"$1"'));
+                          if (resp.state){
+                            this.fullscreenLoading = false;
+                            this.$message({
+                             showClose: true,
+                             message: 'The virtual machine is created successsfully',
+                             type: 'success'
+                             });
+                            this.$store.dispatch('FETCH_USER_VM');
+
+                          }
+                          else {
+                            this.fullscreenLoading = false;
+                            this.$message({
+                              showClose: true,
+                              type: 'error',
+                              title: 'Failed',
+                              message: resp.info,
+                            });
+                          }}).catch((error) => {
+                            this.fullscreenLoading = false;
+                            console.log(error);
+                            this.$message({
+                              showClose: true,
+                              type: 'error',
+                              message: "Network Error",
+                            });
+                          });
+                  }
+                }).catch((error) => {
+                  this.fullscreenLoading = false;
+                  console.log(error);
+                  this.$message({
+                    showClose: true,
+                    type: 'error',
+                    message: "Network Error",
+                  });
+                });
+              }
+              else {
+                this.fullscreenLoading = false;
+                this.$message({
+                  showClose: true,
+                  type: 'error',
+                  message: resp1.info,
+                });
+              }
+            }).catch((error) => {
+              this.fullscreenLoading = false;
+              console.log(error);
+              this.$message({
+                showClose: true,
+                type: 'error',
+                message: "Network Error",
+              });
             });
-            console.log(this.create_vm_form.newMemory);
+            
+
+
           }
         },
         components: {
@@ -242,29 +291,35 @@
         margin-left: 50px;
       }
 
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
+      .bottom {
+        margin-top: 13px;
+        line-height: 12px;
+      }
 
-  .button {
-    padding: 0;
-    margin-left: 20px;
-    float: right;
-  }
+      .button {
+        padding: 0;
+        margin-left: 20px;
+        float: right;
+      }
 
-  .image {
-    width: 100%;
-    display: block;
-  }
+      .image {
+        width: 100%;
+        display: block;
+      }
 
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
-  
-  .clearfix:after {
-      clear: both
-  }
+      .clearfix:before,
+      .clearfix:after {
+        display: table;
+        content: "";
+      }
+
+      .clearfix:after {
+        clear: both
+      }
+
+      .vmitem {
+
+        transition:all .3s ease-in-out;
+      }
     </style>
+

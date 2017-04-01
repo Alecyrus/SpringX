@@ -288,6 +288,11 @@
           
         }).catch((error) => {
           console.log(error);
+          this.$message({
+              showClose: true,
+              type: 'error',
+              message: "Network Error",
+            });
           return error;
         });
 
