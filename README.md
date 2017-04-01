@@ -5,16 +5,23 @@
 
 
 ## Login
-![Login](https://github.com/Alecyrus/SpringX/blob/master/screenshots/login.png?raw=true)
+>![Login](https://github.com/Alecyrus/SpringX/blob/master/screenshots/login.png?raw=true)
+---
 
 ## Overview
-![Overview](https://github.com/Alecyrus/SpringX/blob/master/screenshots/overview.png?raw=true)
+>![Overview](https://github.com/Alecyrus/SpringX/blob/master/screenshots/overview.png?raw=true)
+---
 
 ## Virtual Machine
-![New VM](https://github.com/Alecyrus/SpringX/blob/master/screenshots/new_vm.png?raw=true)
-![VM List](https://github.com/Alecyrus/SpringX/blob/master/screenshots/vm_list.png?raw=true)
-![VNC](https://github.com/Alecyrus/SpringX/blob/master/screenshots/vnc.png?raw=true)
+### Create a new server
+>![New VM](https://github.com/Alecyrus/SpringX/blob/master/screenshots/new_vm.png?raw=true)
 
+### Show the vm list
+>![VM List](https://github.com/Alecyrus/SpringX/blob/master/screenshots/vm_list.png?raw=true)
+
+### The VNC desktop
+>![VNC](https://github.com/Alecyrus/SpringX/blob/master/screenshots/vnc.png?raw=true)
+---
 ## Build Setup
 
 ``` bash
