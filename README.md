@@ -2,7 +2,7 @@
 ![image](https://travis-ci.org/Alecyrus/SpringX.svg?branch=master)
 
 
-> A web front-ends for the simple private cloud.
+> A web front-end for the simple private cloud.
 
 
 
