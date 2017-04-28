@@ -1,6 +1,8 @@
 <template>
   <div class="user">
 
+
+
     <el-row  type="flex">
       <el-col :span="3"  >
         <p>{{ logo_title }}</p>
@@ -25,7 +27,7 @@
 <el-row :gutter="5">
  <el-col :span="6" :offset="9" class="el_col_bottom">
       <p class="copyright" >
-      Copyright &copy; 2017 Junkai Huang. All rights reserved.
+      Copyright &copy; 2017 Alecyrus. Just For Fun
     </p>
       </el-col>
     </el-row>

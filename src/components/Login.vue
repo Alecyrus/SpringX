@@ -41,7 +41,7 @@
         <el-row type="flex" justify="space-around">
           <el-col :span="6" class="el_col_bottom">
             <p>
-              Copyright &copy; 2017 Junkai Huang. All rights reserved.
+              Copyright &copy; 2017 Alecyrus. Just For Fun.
             </p>
           </el-col>
 
@@ -188,6 +188,7 @@
             console.log(this.$store.getters.getUsername);
             console.log("------------");
             //这里进行登录验证
+
 
             this.$request.put('/api/v1/account/user', {
               username: this.login_form.username,
